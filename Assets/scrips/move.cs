@@ -36,10 +36,6 @@ public class move : MonoBehaviour   , IPointerDownHandler, IBeginDragHandler , I
     public void OnDrag(PointerEventData eventData)
     {
         Debug.Log("Dragging");
-        spriteRenderer.color = Color.blue;
-
-        //transform.position += new Vector3(eventData.delta.x * Time.deltaTime, eventData.delta.y * Time.deltaTime);
-
         Vector3 mousePosition = Input.mousePosition;
         Vector3 worldmousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
         worldmousePosition.z = 0f;
