@@ -4,27 +4,34 @@ using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    public float moveSpeed = 0.5f;
-    public float minX = -1.7f; 
-    public float maxX = 1.7f; 
-    public float minY = -0.9f; 
-    public float maxY = 0.9f; 
+    public float moveSpeed = 5f; // ความเร็วในการเคลื่อนที่
 
-   
     void Update()
     {
-        MovePlayerWithMouse();
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            targetPosition.z = 0f;
+
+            StartCoroutine(MovePlayerSmoothly(targetPosition));
+        }
     }
 
-    void MovePlayerWithMouse()
+    IEnumerator MovePlayerSmoothly(Vector3 targetPosition)
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f;
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        float duration = distance / moveSpeed;
 
-        
-        float clampedX = Mathf.Clamp(mousePosition.x, minX, maxX);
-        float clampedY = Mathf.Clamp(mousePosition.y, minY, maxY);
+        float elapsedTime = 0f;
 
-        transform.position = Vector3.MoveTowards(transform.position, new Vector3(clampedX, clampedY, 0f), moveSpeed * Time.deltaTime);
+        while (elapsedTime < duration)
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPosition, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        //// ให้ตำแหน่งสุดท้ายเป็นตำแหน่งที่ถูกปรับให้แน่นอน
+        //transform.position = targetPosition;
     }
 }
